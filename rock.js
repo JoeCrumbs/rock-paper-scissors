@@ -1,19 +1,18 @@
-//  create Array of possible Values 
 const PLAY_OPTIONS = ['Rock', 'Paper', 'Scissors'];
 
+// capitlize first letter for output and comparision with PLAY_OPTIONS
 function capitalizeFirstLetter(string) {
     return string.slice(0,1).toUpperCase() + string.slice(1).toLowerCase();
 }
 
+// generate computer Choice - create random index to use with PLAY_OPTIONS Array
 function computerPlay() {
-    // create random index of Play-Options Array
     let computerChoice = Math.floor(Math.random() * 3);
-    // return computer Choice with random index
     return PLAY_OPTIONS[computerChoice];
 }
 
+//prompt user for weapon of choice and check for typos
 function getUserWeapon() {
-    //prompt user for weapon of choice and check for typos
     let userChoice = capitalizeFirstLetter(prompt('Please choose your Weapon (only rock, paper or scissors)!'));
     if (PLAY_OPTIONS.indexOf(userChoice) > -1) {
         return userChoice;
@@ -25,12 +24,11 @@ function getUserWeapon() {
 
 //evaluate Winner of Round
 function playRound(playerSelection, computerSelection) {
-    // get Index of weapons from PLAY_OPTIONS
     playerSelectionIndex = PLAY_OPTIONS.indexOf(playerSelection);
     computerSelectionIndex = PLAY_OPTIONS.indexOf(computerSelection);
 
-    /* short evaluation: next element alway wins over last, use modulo
-    to evaluate place in sequence, use +1 to avoid 0 and when true
+    /* short evaluation (better than if else...): next element alway wins over last;
+    use moduloto evaluate place in sequence, use +1 to avoid 0 and when true
     (x + 1) % 3 === y -> y will win */
     if ((computerSelectionIndex + 1) % 3 === playerSelectionIndex) {
         return 'player';
@@ -42,7 +40,6 @@ function playRound(playerSelection, computerSelection) {
 }
 
 function game() {
-    //initialize necessary variables
     let playerSelection = '';
     let computerSelection = '';
     let winnerOfRound = '';
@@ -51,10 +48,8 @@ function game() {
     //Start console group for new Game
     console.group('Start a Game of Rock Paper Scissors!');
     for (let round = 1; round < 6; round++) {
-        //get weapons
         playerSelection = getUserWeapon();
         computerSelection = computerPlay();
-        //evaluate winner of round
         winnerOfRound = playRound(playerSelection, computerSelection);
         //console.log winner of round and keep track of score
         switch(winnerOfRound) {
@@ -76,7 +71,7 @@ function game() {
         }
     }
 
-    //evaluate winner of match
+    // evaluate winner of match and end console.group for match
     if (playerScore > computerScore) {
         console.log(`%cEndresult: You Win! ${playerScore}:${computerScore}!`, `color: green`);
     } else if (playerScore < computerScore) {
