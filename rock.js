@@ -29,8 +29,9 @@ function playRound(playerSelection, computerSelection) {
     playerSelectionIndex = PLAY_OPTIONS.indexOf(playerSelection);
     computerSelectionIndex = PLAY_OPTIONS.indexOf(computerSelection);
 
-    /* short evaluation: next element alway wins over last, use modulo to evaluate place in sequence
-    use +1 to avoid 0 and with result of (x + 1) % 3 === y y will win */
+    /* short evaluation: next element alway wins over last, use modulo
+    to evaluate place in sequence, use +1 to avoid 0 and when true
+    (x + 1) % 3 === y -> y will win */
     if ((computerSelectionIndex + 1) % 3 === playerSelectionIndex) {
         return 'player';
     } else if ((playerSelectionIndex + 1) % 3 === computerSelectionIndex) {
@@ -38,29 +39,6 @@ function playRound(playerSelection, computerSelection) {
     } else {
         return 'draw';
     }
-    /* Long Evaluation with if else
-    if ( playerSelection === computerSelection) {
-        return 'It`s a Draw! Try Again!';
-    } else if (playerSelection === 'rock') {
-        if (computerSelection === 'scissors') {
-            return 'You Win! Rock beats Scissors!';
-        } else {
-            return 'You Lose! Paper beats Rock!';
-        }
-    } else if (playerSelection === 'paper') {
-        if (computerSelection === 'rock') {
-            return 'You Win! Paper beats Rock!';
-        } else {
-            return 'You Lose! Scissors beats Paper!';
-        }
-    } else if (playerSelection === 'scissors') {
-        if (computerSelection === 'paper') {
-            return 'You Win! Scissors beats Paper!';
-        } else {
-            return 'You Lose! Rock beats Scissors!';
-        }
-    }
-    */
 }
 
 function game() {
@@ -70,7 +48,7 @@ function game() {
     let winnerOfRound = '';
     let playerScore = 0;
     let computerScore = 0;
-    //Startconole Group for new Game
+    //Start console group for new Game
     console.group('Start a Game of Rock Paper Scissors!');
     for (let round = 1; round < 6; round++) {
         //get weapons
@@ -98,7 +76,7 @@ function game() {
         }
     }
 
-    //evaluate winner or match
+    //evaluate winner of match
     if (playerScore > computerScore) {
         console.log(`%cEndresult: You Win! ${playerScore}:${computerScore}!`, `color: green`);
     } else if (playerScore < computerScore) {
