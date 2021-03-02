@@ -71,7 +71,7 @@ function game() {
     let playerScore = 0;
     let computerScore = 0;
     //Startconole Group for new Game
-    console.group("Start a Game of Rock Paper Scissors!");
+    console.group('Start a Game of Rock Paper Scissors!');
     for (let round = 1; round < 6; round++) {
         //get weapons
         playerSelection = getUserWeapon();
