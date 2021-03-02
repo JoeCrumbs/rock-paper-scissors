@@ -81,6 +81,7 @@ function game() {
         //console.log winner of round and keep track of score
         switch(winnerOfRound) {
             case 'player': {
+                // don't use template strings when older browser must be supported
                 console.log(`Round ${round}: You Win! ${playerSelection} beats ${computerSelection}!`);
                 playerScore += 1;
                 break;
