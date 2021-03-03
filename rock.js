@@ -12,13 +12,13 @@ function computerPlay() {
 }
 
 //prompt user for weapon of choice and check for typos
-function getUserWeapon() {
-    let userChoice = capitalizeFirstLetter(prompt('Please choose your Weapon (only rock, paper or scissors)!'));
+function getUserWeapon(promptMessage) {
+    let userChoice = capitalizeFirstLetter(prompt(promptMessage));
     if (PLAY_OPTIONS.indexOf(userChoice) > -1) {
         return userChoice;
     } else {
         // if typo ask again
-        getUserWeapon();
+        getUserWeapon('Typo? ' + promptMessage);
     }
 }
 
@@ -48,7 +48,7 @@ function game() {
     //Start console group for new Game
     console.group('Start a Game of Rock Paper Scissors!');
     for (let round = 1; round < 6; round++) {
-        playerSelection = getUserWeapon();
+        playerSelection = getUserWeapon('Please choose your Weapon (only rock, paper or scissors)!');
         computerSelection = computerPlay();
         winnerOfRound = playRound(playerSelection, computerSelection);
         //console.log winner of round and keep track of score
