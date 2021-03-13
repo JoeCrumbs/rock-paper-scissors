@@ -1,83 +1,105 @@
-const PLAY_OPTIONS = ['Rock', 'Paper', 'Scissors'];
+(function() {
+    // remove stop-transition (initially added to stop transitions showing on page load)
+    document.body.classList.remove('stop-transition')
 
-// capitlize first letter for output and comparision with PLAY_OPTIONS
-function capitalizeFirstLetter(string) {
-    return string.slice(0,1).toUpperCase() + string.slice(1).toLowerCase();
-}
+    //iniitalize counters and get nodes/elements
+    const PLAY_OPTIONS = ['rock', 'paper', 'scissors'];
+    const playerDivs = document.querySelectorAll('.weapon-choice.active');
+    const weapons = document.querySelectorAll('.weapon-choice');
+    const newGameButton = document.querySelector('#new-game');
+    let playerScore = computerScore = 0;
+    let round = 0;
 
-// generate computer Choice - create random index to use with PLAY_OPTIONS Array
-function computerPlay() {
-    let computerChoice = Math.floor(Math.random() * 3);
-    return PLAY_OPTIONS[computerChoice];
-}
-
-//prompt user for weapon of choice and check for typos
-function getUserWeapon(promptMessage) {
-    let userChoice = capitalizeFirstLetter(prompt(promptMessage));
-    if (PLAY_OPTIONS.indexOf(userChoice) > -1) {
-        return userChoice;
-    } else {
-        // if typo ask again
-        getUserWeapon('Typo? ' + promptMessage);
+    // capitlize first letter for output and comparision with PLAY_OPTIONS
+    function capitalizeFirstLetter(string) {
+        return string.slice(0,1).toUpperCase() + string.slice(1).toLowerCase();
     }
-}
 
-//evaluate Winner of Round
-function playRound(playerSelection, computerSelection) {
-    playerSelectionIndex = PLAY_OPTIONS.indexOf(playerSelection);
-    computerSelectionIndex = PLAY_OPTIONS.indexOf(computerSelection);
-
-    /* short evaluation (better than if else...): next element alway wins over last;
-    use moduloto evaluate place in sequence, use +1 to avoid 0 and when true
-    (x + 1) % 3 === y -> y will win */
-    if ((computerSelectionIndex + 1) % 3 === playerSelectionIndex) {
-        return 'player';
-    } else if ((playerSelectionIndex + 1) % 3 === computerSelectionIndex) {
-        return 'computer';
-    } else {
-        return 'draw';
+    // generate computer Choice - create random index to use with PLAY_OPTIONS Array
+    function computerPlay() {
+        let computerChoice = Math.floor(Math.random() * 3);
+        return PLAY_OPTIONS[computerChoice];
     }
-}
 
-function game() {
-    let playerSelection = '';
-    let computerSelection = '';
-    let winnerOfRound = '';
-    let playerScore = 0;
-    let computerScore = 0;
-    //Start console group for new Game
-    console.group('Start a Game of Rock Paper Scissors!');
-    for (let round = 1; round < 6; round++) {
-        playerSelection = getUserWeapon('Please choose your Weapon (only rock, paper or scissors)!');
-        computerSelection = computerPlay();
-        winnerOfRound = playRound(playerSelection, computerSelection);
-        //console.log winner of round and keep track of score
-        switch(winnerOfRound) {
-            case 'player': {
-                // don't use template strings when older browser must be supported
-                console.log(`Round ${round}: You Win! ${playerSelection} beats ${computerSelection}!`);
-                playerScore += 1;
-                break;
-            }
-            case 'computer': {
-                console.log(`Round ${round}: You Lose! ${computerSelection} beats ${playerSelection}!`);
-                computerScore += 1;
-                break;
-            }
-            default: {
-                console.log(`Round ${round}: Its a Draw! Try Again!`);
-                break;
-            }
+    // add one point to winner of round
+    function incrementScore(string) {
+        let oldScore = document.querySelector(`#${string}-score`);
+        let newScore = +oldScore.textContent + 1;
+        oldScore.textContent = newScore.toString();
+        return newScore;
+    }
+
+    //check if game has ended
+    function checkForWinner() {
+        return (playerScore === 5 || computerScore === 5);
+    }
+
+    //send output to game-log
+    function sendMessage(string) {
+        let message = document.createElement('p');
+        let gameLog = document.querySelector('.game-log__scroll');
+        let newLine = document.querySelector('#new-line');
+        message.textContent = '> '+ string;
+        if (checkForWinner()) message.style.fontWeight = 'bold';
+        gameLog.insertBefore(message, newLine);
+        gameLog.scrollTop = gameLog.scrollHeight;
+    }
+
+    //animation of win, lose or draw
+    function startTransition(div1, div2, customClass) {
+        div1.classList.add((customClass) ? customClass : 'winning');
+        div2.classList.add((customClass) ? customClass : 'losing')
+    }
+
+    //eventlistener function for rock paper scissors player buttons
+    function game() {
+        let computerSelection = computerPlay();
+        let computerDiv = document.querySelector(`.weapon-choice.computer#${computerSelection}`);
+        playerSelectionIndex = PLAY_OPTIONS.indexOf(this.id);
+        computerSelectionIndex = PLAY_OPTIONS.indexOf(computerSelection);
+        /* short evaluation (better than if else...): next element alway wins over last;
+        use moduloto evaluate place in sequence, use +1 to avoid 0 and when true
+        (x + 1) % 3 === y -> y will win */
+        if ((computerSelectionIndex + 1) % 3 === playerSelectionIndex) {
+            // don't use template strings when older browser must be supported
+            sendMessage(`Round ${round}: You Win! ${capitalizeFirstLetter(this.id)} beats ${computerSelection}!`);
+            startTransition(this,computerDiv);
+            playerScore = incrementScore('player');
+        } else if ((playerSelectionIndex + 1) % 3 === computerSelectionIndex) {
+            sendMessage(`Round ${round}: You Lose! ${capitalizeFirstLetter(computerSelection)} beats ${this.id}!`);
+            startTransition(computerDiv,this);
+            computerScore = incrementScore('computer');
+        } else {
+            sendMessage(`Round ${round}: Its a draw! Try Again!`);
+            startTransition(this,computerDiv,'drawing');
         }
+        // Determine if game ends
+        if (playerScore === 5 || computerScore === 5) {
+            playerDivs.forEach((div) => {
+                div.removeEventListener('click', game);
+                div.classList.remove('active');
+            });
+            sendMessage(`${(playerScore === 5) ? 'Player' : 'Computer'} wins!
+            The final score is ${playerScore}:${computerScore}!`) 
+        }
+        round++;
     }
 
-    // evaluate winner of match and end console.group for match
-    if (playerScore > computerScore) {
-        console.log(`%cEndresult: You Win! ${playerScore}:${computerScore}!`, `color: green`);
-    } else if (playerScore < computerScore) {
-        console.log(`%cEndresult: You Lose! ${playerScore}:${computerScore}!`, `color: red`);
-    } else {
-        console.log(`%cEndresult: It's a Draw! ${playerScore}:${computerScore}!`, `color: orange`);
+    //add EvetListener
+    playerDivs.forEach((div) => {
+        div.addEventListener('click', game);
+    });
+
+    newGameButton.addEventListener('click', () => {
+        window.location.reload();
+    })
+
+    function removeTransition(e) {
+        if (e.propertyName !== 'transform') return;
+        this.classList.remove('winning','losing','drawing');
     }
-    console.groupEnd();
-}
+
+    weapons.forEach(function(weapon) {
+        weapon.addEventListener('transitionend', removeTransition);
+    });
+})();
