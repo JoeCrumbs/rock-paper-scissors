@@ -1,6 +1,6 @@
 # rock-paper-scissors
 
-## Assignment Nr.1 (see Backup-Console_Version)
+## Assignment Nr.1
 ([The Odin Project Challenge Nr.2 - Pt.1](https://www.theodinproject.com/courses/foundations/lessons/rock-paper-scissors))
 1. Start a new Git repo for your project.
 1. Create a blank HTML document with a script tag. This game is going to be played completely from the console, so don’t worry about putting anything else in there.
