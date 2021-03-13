@@ -120,8 +120,7 @@ h2 {
 
 .weapon-choice > img {
     margin: auto;
-    width: 58%;
-    height: 58%;
+    width: 50%;
     object-fit: contain;
 }
 
